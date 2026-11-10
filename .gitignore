@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build output
+dist/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Angular cache
+.angular/
+
+# OS / Editor
+.DS_Store
+.vscode/
+.idea/
+*.swp
+Thumbs.db

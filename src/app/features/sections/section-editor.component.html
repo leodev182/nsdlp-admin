@@ -1,0 +1,50 @@
+@if (section()) {
+  <div class="editor">
+    <div class="editor__header">
+      <h2 class="editor__title">{{ section()!.label }}</h2>
+      <span class="editor__badge" [class.on]="section()!.enabled">
+        {{ section()!.enabled ? 'Visible' : 'Oculta' }}
+      </span>
+    </div>
+
+    <p class="editor__hint">
+      Edita el contenido JSON de esta sección. Los cambios se reflejan en la web al guardar.
+    </p>
+
+    @if (error()) {
+      <p class="editor__error" role="alert">{{ error() }}</p>
+    }
+
+    <div class="editor__field">
+      <label for="content-json">Contenido (JSON)</label>
+      <textarea
+        id="content-json"
+        class="editor__textarea"
+        [class.invalid]="jsonError()"
+        [ngModel]="contentJson()"
+        (ngModelChange)="contentJson.set($event); validateJson($event)"
+        [disabled]="saving()"
+        rows="20"
+        spellcheck="false"
+        autocomplete="off"
+      ></textarea>
+      @if (jsonError()) {
+        <p class="editor__json-error">{{ jsonError() }}</p>
+      }
+    </div>
+
+    <div class="editor__actions">
+      <button
+        class="editor__save"
+        (click)="save()"
+        [disabled]="saving() || !!jsonError()"
+      >
+        @if (saving()) { Guardando… }
+        @else if (saved()) { ✓ Guardado }
+        @else { Guardar cambios }
+      </button>
+    </div>
+  </div>
+} @else {
+  <div class="editor__loading">Cargando sección…</div>
+}

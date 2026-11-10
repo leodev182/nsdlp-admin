@@ -1,0 +1,84 @@
+<div class="admin-layout" [class.sidebar-open]="sidebarOpen()">
+
+  <!-- Mobile overlay -->
+  <div class="sidebar-backdrop" (click)="sidebarOpen.set(false)" aria-hidden="true"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" aria-label="Navegación del admin">
+    <div class="sidebar__header">
+      <span class="sidebar__cross">✝</span>
+      <div>
+        <p class="sidebar__label">ADMIN</p>
+        <p class="sidebar__name">Ntra. Sra. de la Paz</p>
+      </div>
+    </div>
+
+    <nav class="sidebar__nav">
+
+      <!-- Sections group -->
+      <p class="sidebar__group-label">SECCIONES</p>
+
+      @if (loading()) {
+        <div class="sidebar__skeleton">
+          @for (_ of [1,2,3,4,5,6]; track $index) {
+            <div class="sidebar__skel-item"></div>
+          }
+        </div>
+      } @else {
+        @for (section of sections(); track section.id) {
+          <div class="sidebar__section-row" [class.active]="router.url.includes(section.slug)">
+            <button
+              class="sidebar__section-btn"
+              (click)="navigateToSection(section.slug)"
+              [attr.aria-current]="router.url.includes(section.slug) ? 'page' : null"
+            >
+              {{ section.label }}
+            </button>
+            <button
+              class="sidebar__toggle"
+              [class.on]="section.enabled"
+              (click)="toggleSection(section)"
+              [attr.aria-label]="(section.enabled ? 'Ocultar ' : 'Mostrar ') + section.label"
+              [attr.aria-pressed]="section.enabled"
+            >
+              <span class="sidebar__toggle-thumb"></span>
+            </button>
+          </div>
+        }
+      }
+
+      <div class="sidebar__divider"></div>
+
+      <!-- Extra nav links -->
+      @for (link of navLinks; track link.route) {
+        <a
+          class="sidebar__nav-link"
+          [routerLink]="link.route"
+          routerLinkActive="sidebar__nav-link--active"
+        >
+          <span>{{ link.icon }}</span>
+          {{ link.label }}
+        </a>
+      }
+    </nav>
+
+    <div class="sidebar__footer">
+      <p class="sidebar__user">{{ pb.currentAdmin?.email }}</p>
+      <button class="sidebar__logout" (click)="logout()">Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <button class="topbar__burger" (click)="sidebarOpen.update(v => !v)" aria-label="Menú">
+        <span></span><span></span><span></span>
+      </button>
+      <h1 class="topbar__title">Panel de administración</h1>
+    </header>
+
+    <main class="admin-content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

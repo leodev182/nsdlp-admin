@@ -1,0 +1,63 @@
+<div class="admins">
+  <h2 class="admins__title">Administradores</h2>
+  <p class="admins__hint">Gestiona quién puede acceder al panel. Al invitar a alguien se le enviará un correo para establecer su contraseña.</p>
+
+  <!-- Invite form -->
+  <section class="admins__invite card">
+    <h3 class="card__title">Invitar administrador</h3>
+    <form class="invite-form" (ngSubmit)="invite()">
+      <div class="invite-row">
+        <div class="invite-field">
+          <label for="inv-name">Nombre</label>
+          <input id="inv-name" type="text" [(ngModel)]="inviteName" name="invName" placeholder="María González" [disabled]="inviting()" />
+        </div>
+        <div class="invite-field">
+          <label for="inv-email">Correo electrónico <span class="required">*</span></label>
+          <input id="inv-email" type="email" [(ngModel)]="inviteEmail" name="invEmail" required placeholder="maria@parroquia.cl" [disabled]="inviting()" />
+        </div>
+      </div>
+
+      @if (inviteSuccess()) {
+        <p class="invite-success" role="status">{{ inviteSuccess() }}</p>
+      }
+      @if (inviteError()) {
+        <p class="invite-error" role="alert">{{ inviteError() }}</p>
+      }
+
+      <button type="submit" class="invite-btn" [disabled]="inviting() || !inviteEmail">
+        @if (inviting()) { Invitando… } @else { Enviar invitación }
+      </button>
+    </form>
+  </section>
+
+  <!-- Current admins list -->
+  <section class="admins__list card">
+    <h3 class="card__title">Administradores actuales</h3>
+
+    @if (loading()) {
+      <p class="admins__loading">Cargando…</p>
+    } @else if (admins().length === 0) {
+      <p class="admins__empty">No hay administradores registrados.</p>
+    } @else {
+      <ul class="admins__table">
+        @for (admin of admins(); track admin.id) {
+          <li class="admins__row">
+            <div class="admins__info">
+              <p class="admins__email">{{ admin.email }}</p>
+              @if (admin.name) {
+                <p class="admins__name">{{ admin.name }}</p>
+              }
+            </div>
+            <div class="admins__actions">
+              @if (isSelf(admin)) {
+                <span class="admins__self-badge">Tú</span>
+              } @else {
+                <button class="admins__remove" (click)="remove(admin)">Eliminar</button>
+              }
+            </div>
+          </li>
+        }
+      </ul>
+    }
+  </section>
+</div>
